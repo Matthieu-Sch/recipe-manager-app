@@ -7,10 +7,11 @@ const tokenSchema = mongoose.Schema(
     // Champ qui stoken l'ID utilisateur en temps que clé étrangère
     userId: { type: mongoose.Schema.Types.ObjectId, ref: "users" },
     // Champ token : gérer grâce à JWT
-    token: { type: String, require: true },
+    token: { type: String, required: true },
     // Champ pour définir la date d'expiration du token
     expiresAt: { type: Date, required: true },
   },
+  // Création automatique des champs "createdAt" et "updatedAt"
   { timestamps: true }
 );
 

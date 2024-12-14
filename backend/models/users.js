@@ -17,7 +17,7 @@ const userSchema = mongoose.Schema(
     // Champ mot de passe
     password: { type: String, required: true },
   },
-  // Champ "createAt" et "updatedAt"
+  // Création automatique des champs "createAt" et "updatedAt"
   { timestamps: true }
 );
 
