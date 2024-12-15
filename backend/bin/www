@@ -1,0 +1,60 @@
+#!/usr/bin/env node
+
+// Importe l'application configurée dans app.js
+var app = require("../app");
+var http = require("http");
+
+// Définit le port à partir des variables d'environnement ou par défaut sur 3000
+var port = normalizePort(process.env.PORT || "3000");
+app.set("port", port);
+
+// Crée le serveur HTTP en utilisant l'application Express
+var server = http.createServer(app);
+
+// Lance le serveur en écoutant sur le port spécifié
+server.listen(port);
+server.on("error", onError);
+server.on("listening", onListening);
+
+// Normalise le port en fonction des types (nombre, chaîne ou faux)
+function normalizePort(val) {
+  var port = parseInt(val, 10);
+
+  if (isNaN(port)) {
+    return val; // Si ce n'est pas un nombre, retourne la chaîne (ex : 'pipe')
+  }
+  if (port >= 0) {
+    return port; // Si c'est un nombre, retourne le port
+  }
+  return false;
+}
+
+// Gère les erreurs au démarrage du serveur
+function onError(error) {
+  if (error.syscall !== "listen") {
+    throw error;
+  }
+
+  var bind = typeof port === "string" ? "Pipe " + port : "Port " + port;
+
+  // Gère des erreurs spécifiques de ports
+  switch (error.code) {
+    case "EACCES":
+      console.error(bind + " nécessite des privilèges élevés");
+      process.exit(1);
+      break;
+    case "EADDRINUSE":
+      console.error(bind + " est déjà utilisé");
+      process.exit(1);
+      break;
+    default:
+      throw error;
+  }
+}
+
+// Affiche un message de confirmation une fois que le serveur est prêt
+function onListening() {
+  var addr = server.address();
+  var bind = typeof addr === "string" ? "pipe " + addr : "port " + addr.port;
+  console.log("Écoute sur " + bind);
+}

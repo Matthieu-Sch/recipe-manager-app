@@ -1,7 +1,9 @@
+// Connexion à la bdd
+require("../models/connection");
 // Import du modèle "User"
-import User from "../models/users";
+const User = require("../models/users");
 // Importation du modèle "Token"
-import Token from "../models/tokens";
+const Token = require("../models/tokens");
 // Importation du module "bcrypt" pour hasher le mot de passe
 const bcrypt = require("bcrypt");
 // Importation du module "jsonwebtoken" pour créer un token sécuriser pour les utilisateurs
@@ -26,32 +28,35 @@ const signup = async (req, res) => {
     ) {
       // Renvoie une erreur si un ou plusieurs champs sont vides
       // 400 = Bad request
-      return res.status(400).json("Veuillez remplir tous les champs !");
+      return res
+        .status(400)
+        .json({ message: "Veuillez remplir tous les champs !" });
     }
 
     // Vérification que l'e-mail soit correctement formaté
     if (!emailRegexp.test(email)) {
       console.log("Mauvais format de l'e-mail.");
       // Renvoie une erreur si le format ne va pas
-      return res.status(400).json("E-mail invalide.");
+      return res.status(400).json({ message: "E-mail invalide." });
     }
 
     // Vérification que le mot de passe soit suffisamment sécurisé
     if (!passwordRegexp.test(password)) {
       console.log("Le mot de passe n'est pas suffisament sécurisé.");
       // Renvoie une erreur si le format ne va pas
-      return res
-        .status(400)
-        .json(
-          "Le mot de passe doit contenir au moins :\n • Entre 8 et 16 caractères, \n • Une majuscule, \n • Une minuscule, \n • Un chiffre, \n • Un caractère spéciale  "
-        );
+      return res.status(400).json({
+        message:
+          "Le mot de passe doit contenir au moins :\n • Entre 8 et 16 caractères, \n • Une majuscule, \n • Une minuscule, \n • Un chiffre, \n • Un caractère spéciale  ",
+      });
     }
 
     // Vérification de la correspondance des mots de passe
     if (password !== confirmPassword) {
       console.log("Les mots de passe ne correspondent pas.");
       // Renvoie une erreur s'ils ne sont pas identiques
-      return res.status(400).json("Vos mots de passe ne correspondent pas.");
+      return res
+        .status(400)
+        .json({ message: "Vos mots de passe ne correspondent pas." });
     }
 
     // Vérification quant à l'existence de l'e-mail ou du username de l'utilisateur
@@ -61,7 +66,9 @@ const signup = async (req, res) => {
     if (existingUser) {
       console.log("L'email ou le nom d'utilisateur existe déjà");
       // Renvoie une erreur si l'e-mail ou le username est déjà existant
-      res.status(409).json("E-mail ou nom d'utilisateur déjà existant.");
+      return res
+        .status(409)
+        .json({ message: "E-mail ou nom d'utilisateur déjà existant." });
     }
 
     // Hashage du mot de passe
@@ -101,7 +108,33 @@ const signup = async (req, res) => {
     res.status(500).json({ message: "Erreur serveur." });
   }
 };
-const signin = async (req, res) => {};
+const signin = async (req, res) => {
+  try {
+    // Nommage des champs pour plus de simplicité
+    const { username, password } = req.body;
+
+    // Vérification que les champs ne soient bien remplis
+    if (!username.trim() || !password.trim()) {
+      return res
+        .status(400)
+        .json({ message: "Veuillez remplir tous les champs !" });
+    }
+
+    // Vérification de l'existance du username
+    const userExists = await User.findOne({ username });
+    if (!userExists) {
+      return res.status(400).json({ message: "Identifiants invalides" });
+    }
+
+    // Vérification de la validité du mot de passe
+    const passwordValid = bcrypt.compareSync(password, userExists.password);
+    if (!passwordValid) {
+      return res.status(400).json({ message: "Identifiants invalides" });
+    }
+
+    return res.status(200).json({ message: "Connexion réussie !" });
+  } catch (error) {}
+};
 const logout = async (req, res) => {};
 
 module.exports = { signup, signin, logout };
