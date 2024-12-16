@@ -9,8 +9,9 @@ const recipeSchema = mongoose.Schema(
       required: true,
     },
     // Champs "recipeId" rattaché à l'api "spoonacular"
-    recipeId: { type: String, required: true },
     title: { type: String },
+    ingredients: { type: String },
+    instructions: { type: String },
     image: { type: String },
   },
   // Création automatique des champs "createdAt" et "updatedAt"
