@@ -1,7 +1,7 @@
 // Connexion à la bdd
 require("../models/connection");
-// Import du modèle recipes
-const Recipe = require("../models/recipes");
+// Import du modèle saved_recipes
+const Savedrecipe = require("../models/saved_recipes");
 // Import de la clé API depuis le fichier ".env"
 const apiKey = process.env.API_KEY;
 
@@ -29,12 +29,23 @@ const getRecipes = async (req, res) => {
 };
 
 // Logique pour sauvegarder une recette
-const saveRecipe = async (req, res) => {
+const savedRecipe = async (req, res) => {
   try {
     const { title, ingredients, instructions, image } = req.body;
 
+    const alreadySaved = await Savedrecipe.findOne({
+      title,
+      userId: req.user.id,
+    });
+    if (alreadySaved) {
+      await Savedrecipe.deleteOne({ title, _id: alreadySaved._id });
+      return res
+        .status(200)
+        .json({ message: "Recette retirée de vos sauvegardes." });
+    }
+
     // Création de la sauvegarde
-    const newSaveRecipe = await new Recipe({
+    const newSaveRecipe = await new Savedrecipe({
       title,
       ingredients,
       instructions,
@@ -47,4 +58,4 @@ const saveRecipe = async (req, res) => {
   } catch (error) {}
 };
 
-module.exports = { getRecipes };
+module.exports = { savedRecipe };

@@ -19,7 +19,7 @@ const recipeSchema = mongoose.Schema(
 );
 
 // Création du modèle "recipes" définit par le schema "recipeSchema"
-const Recipe = mongoose.model("recipes", recipeSchema);
+const Savedrecipe = mongoose.model("recipes", recipeSchema);
 
 // Exportation du fichier pour qu'il puisse être récupéré ailleurs
-module.exports = Recipe;
+module.exports = Savedrecipe;
