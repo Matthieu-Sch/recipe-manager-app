@@ -7,7 +7,7 @@ const cors = require("cors"); // Pour gérer les requêtes cross-origin
 
 require("./models/connection"); // Connexion à MongoDB
 const usersRouter = require("./routes/users"); // Routes pour les utilisateurs
-const recipesRouter = require("./routes/recipes"); // Routes pour les recettes
+const recipesRouter = require("./routes/saved-recipes"); // Routes pour les recettes
 
 const app = express(); // Crée l'application Express
 

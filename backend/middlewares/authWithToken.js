@@ -12,7 +12,10 @@ const authWithToken = async (req, res, next) => {
     // Vérification du token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     // Ajout des données utilisateur à la requête
-    req.user = decoded;
+    req.user = { id: decoded.userId };
+
+    console.log("Token décodé :", decoded); // Vérification du contenu
+    console.log("req.user :", req.user); // Vérification après ajout
     // Passage au middleware suivant
     next();
   } catch (error) {
