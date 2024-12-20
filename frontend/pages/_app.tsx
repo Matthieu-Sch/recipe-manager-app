@@ -1,7 +1,7 @@
 import "../styles/globals.css";
 import { AppProps } from "next/app";
 import Head from "next/head";
-import Header from "../components/Header";
+import Layout from "../components/Layout/Layout";
 
 function App({ Component, pageProps }: AppProps) {
   return (
@@ -9,8 +9,9 @@ function App({ Component, pageProps }: AppProps) {
       <Head>
         <title>Todo App</title>
       </Head>
-      <Header />
-      <Component {...pageProps} />
+      <Layout>
+        <Component touch {...pageProps} />
+      </Layout>
     </>
   );
 }
